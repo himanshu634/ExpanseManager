@@ -61,9 +61,9 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   final List<Transaction> _userTransactions = [];
-  bool _showChart = false;
+  bool _showChart = false; 
 
   void _addNewTransaction(String title, double amount, DateTime date) {
     final tx = Transaction(
@@ -75,6 +75,23 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _userTransactions.add(tx);
     });
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   void _startAddNewTransaction(BuildContext ctx) {
@@ -157,14 +174,14 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget txList,
   ) {
     return [
-       Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    .3,
-                child: Chart(_recentTransactions),
-              ),
-               txList
+      Container(
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            .3,
+        child: Chart(_recentTransactions),
+      ),
+      txList
     ];
   }
 
@@ -229,7 +246,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ..._buildLandScapeContent(mediaQuery, appBar, txList),
 
             if (!_isLandScape)
-            ..._buildPotraitContent(mediaQuery, appBar, txList),
+              ..._buildPotraitContent(mediaQuery, appBar, txList),
           ],
         ),
       ),

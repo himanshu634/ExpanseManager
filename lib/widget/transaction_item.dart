@@ -1,16 +1,37 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../model/transaction.dart';
 
-class TransactionItem extends StatelessWidget {
+class TransactionItem extends StatefulWidget {
   final Transaction transaction;
   final Function deleteTransaction;
 
   const TransactionItem({
+    Key key,
     @required this.transaction,
     @required this.deleteTransaction,
-  });
+  }) : super(key: key);
+
+  @override
+  _TransactionItemState createState() => _TransactionItemState();
+}
+
+class _TransactionItemState extends State<TransactionItem> {
+  Color _bgColor;
+  @override
+  void initState() {
+    const _availableColors = [
+      Colors.purple,
+      Colors.yellow,
+      Colors.blue,
+      Colors.black,
+    ];
+    _bgColor = _availableColors[Random().nextInt(4)];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +46,21 @@ class TransactionItem extends StatelessWidget {
           leading: CircleAvatar(
             child: FittedBox(
               child: Text(
-                "\$${transaction.amount}",
+                "\$${widget.transaction.amount}",
                 style: TextStyle(
                   color: Colors.white,
                 ),
               ),
             ),
             radius: 35,
-            backgroundColor: Colors.purple,
+            backgroundColor: _bgColor,
           ),
           title: Text(
-            '${transaction.title}',
+            '${widget.transaction.title}',
             style: Theme.of(context).textTheme.headline6,
           ),
           subtitle: Text(
-            '${DateFormat().add_yMMMd().format(transaction.date)}',
+            '${DateFormat().add_yMMMd().format(widget.transaction.date)}',
             style: TextStyle(
               fontFamily: 'Courgette',
             ),
@@ -49,7 +70,7 @@ class TransactionItem extends StatelessWidget {
               Icons.delete,
               color: Colors.red,
             ),
-            onPressed: () => deleteTransaction(transaction.id),
+            onPressed: () => widget.deleteTransaction(widget.transaction.id),
           ),
         ),
       ),
